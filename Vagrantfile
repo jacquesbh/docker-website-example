@@ -71,7 +71,7 @@ Vagrant.configure(2) do |config|
     server.vm.provision :docker_compose,
                         yml: "/vagrant/infra/docker-compose.yml",
                         options: "--x-networking",
-                        command_options: { rm: "", up: "-d --timeout 20"}
+                        command_options: { up: "-d --timeout 20"}
                         # run: ""
   end
 

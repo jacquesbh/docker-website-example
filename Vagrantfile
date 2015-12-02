@@ -7,9 +7,25 @@
 # Machine hostname for local development
 $hostname      = "demo.dev"
 $virtualbox_ip = "10.0.1.42"
+$project_name  = "demo"
 
 # PLEASE DON'T TOUCH BELOW
 # ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+# Dependencies
+dependencies_installed = false
+unless Vagrant.has_plugin?("vagrant-docker-compose")
+  system("vagrant plugin install vagrant-docker-compose")
+  dependencies_installed = true
+end
+unless Vagrant.has_plugin?("vagrant-hostmanager")
+  system("vagrant plugin install vagrant-hostmanager")
+  dependencies_installed = true
+end
+if dependencies_installed
+  puts "Dependency installed, please try the command again."
+  exit
+end
 
 Vagrant.configure(2) do |config|
 
@@ -25,6 +41,7 @@ Vagrant.configure(2) do |config|
     # Which box?
     server.vm.box     = "puphpet/debian75-x64"
     server.vm.box_url = "puphpet/debian75-x64"
+    #server.vm.box = "hashicorp/precise64"
 
     # VMWare Fusion customization
     server.vm.provider :vmware_fusion do |vmware, override|
@@ -64,15 +81,15 @@ Vagrant.configure(2) do |config|
 
     # Install required packages
     config.vm.provision :shell,
-                        inline: "sudo apt-get install -y apt-transport-https"
+                        inline: "sudo apt-get update && apt-get install -y apt-transport-https"
 
     # Provision with Docker
     server.vm.provision :docker
     server.vm.provision :docker_compose,
                         yml: "/vagrant/infra/docker-compose.yml",
-                        options: "--x-networking",
-                        command_options: { up: "-d --timeout 20"}
-                        # run: ""
+                        project_name: $project_name,
+                        command_options: { up: "-d --timeout 20"},
+                        run: "always"
   end
 
 end

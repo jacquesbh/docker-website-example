@@ -1,0 +1,10 @@
+# Main compose
+# ¯¯¯¯¯¯¯¯¯¯¯¯
+# [!!] Run docker-compose with the --x-networking argument
+
+# Application
+# ¯¯¯¯¯¯¯¯¯¯¯
+app:
+  build: ./machine/app
+  ports:
+    - "80:80"

@@ -8,3 +8,8 @@ app:
   build: ./machine/app
   ports:
     - "80:80"
+  volumes:
+    # It's bad because the image has a dependence,
+    # but it's really better in development
+    - ../app/:/usr/share/nginx/html/
+
